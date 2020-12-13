@@ -5,6 +5,7 @@ import BLACKLIST from './constants/blacklist'
 import client from './apollo/client'
 import { PAIR_RESERVES_BY_TOKENS, PAIRS_VOLUME_QUERY_STRING, SWAPS_BY_PAIR, TOP_PAIRS, PAIR_FROM_TOKENS, TOTAL_LIQUIDITY } from './apollo/queries'
 import { getBlockFromTimestamp } from './blocks/queries'
+
 import {
   PairReservesQuery,
   PairReservesQueryVariables,
@@ -38,7 +39,9 @@ export interface MappedDetailedPair extends Pair {
 }
 
 export async function getTopPairs(): Promise<MappedDetailedPair[]> {
+
   const epochSecond = Math.floor(new Date().getTime() / 1000)
+  
   const firstBlock = await getBlockFromTimestamp(epochSecond - 86400)
 
   if (!firstBlock) {
@@ -117,7 +120,8 @@ export async function getTopPairs(): Promise<MappedDetailedPair[]> {
           previous24hVolumeToken1:
             pair.volumeToken1 && yesterday?.volumeToken1
               ? new BigNumber(pair.volumeToken1).minus(yesterday.volumeToken1)
-              : new BigNumber(pair.volumeToken1)
+              : new BigNumber(pair.volumeToken1),
+          
         }
       }
     ) ?? []
